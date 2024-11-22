@@ -1,0 +1,32 @@
+﻿version: "3.9"
+services:
+  php:
+    image: php:7.4-apache
+    container_name: php-container
+    volumes:
+      - ./index.php:/var/www/html/index.php
+    ports:
+      - "8080:80"
+    environment:
+      - DISPLAY_ERRORS=1
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nginx-container
+    ports:
+      - "4500:4500"
+    depends_on:
+      - php
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: Senha123
+      MYSQL_DATABASE: meubanco
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./banco.sql:/docker-entrypoint-initdb.d/banco.sql
